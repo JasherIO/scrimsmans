@@ -21,7 +21,7 @@ router.get('/:id', function(req, res, next) {
   const id = parseInt(req.params.id)
 
   if (!id)
-    return next('Invalid request')
+    return next({ error: 'id must be an integer', status: 400 })
 
   db.query(`select * from teams where id=${id}`, (error, results) => {
     if (error) 
@@ -36,7 +36,7 @@ router.get('/:id/matches', function(req, res, next) {
   const id = parseInt(req.params.id)
 
   if (!id)
-    return next('Invalid request')
+    return next({ error: 'id must be an integer', status: 400 })
 
   db.query(`select * from matches where team1=${id} or team2=${id}`, (error, results) => {
     if (error) 
@@ -51,7 +51,7 @@ router.get('/:id/players', function(req, res, next) {
   const id = parseInt(req.params.id)
 
   if (!id)
-    return next('Invalid request')
+    return next({ error: 'id must be an integer', status: 400 })
 
   db.query(`select * from players where team=${id}`, (error, results) => {
     if (error) 
