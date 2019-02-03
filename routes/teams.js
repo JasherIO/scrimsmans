@@ -1,51 +1,61 @@
 var express = require('express')
+var expressSanitized = require('express-sanitize-escape')
+
 var router = express.Router()
+expressSanitized.sanitizeParams(router, ['id'])
+
 var db = require('../db')
 
 // GET list of teams
 router.get('/', function(req, res, next) {
   db.query('select * from teams', (error, results) => {
     if (error) 
-      return reject(error)
+      return next(error)
     
     res.send(results)
   })
 })
 
 // GET team
-router.get('/:teamId', function(req, res, next) {
-  // Validate params
-  const teamId = req.params.teamId
+router.get('/:id', function(req, res, next) {
+  const id = parseInt(req.params.id)
 
-  db.query(`select * from teams where id=${teamId}`, (error, results) => {
+  if (!id)
+    return next('Invalid request')
+
+  db.query(`select * from teams where id=${id}`, (error, results) => {
     if (error) 
-      return reject(error)
+      return next(error)
     
     res.send(results)
   })
 })
 
 // GET matches for team
-router.get('/:teamId/matches', function(req, res, next) {
-  // Validate params
-  const teamId = req.params.teamId
+router.get('/:id/matches', function(req, res, next) {
+  const id = parseInt(req.params.id)
 
-  db.query(`select * from matches where team1=${teamId} or team2=${teamId}`, (error, results) => {
+  if (!id)
+    return next('Invalid request')
+
+  db.query(`select * from matches where team1=${id} or team2=${id}`, (error, results) => {
     if (error) 
-      return reject(error)
+      return next(error)
     
     res.send(results)
   })
 })
 
-// GET matches for team
-router.get('/:teamId/players', function(req, res, next) {
-  // Validate params
-  const teamId = req.params.teamId
+// GET players for team
+router.get('/:id/players', function(req, res, next) {
+  const id = parseInt(req.params.id)
 
-  db.query(`select * from players where team=${teamId}`, (error, results) => {
+  if (!id)
+    return next('Invalid request')
+
+  db.query(`select * from players where team=${id}`, (error, results) => {
     if (error) 
-      return reject(error)
+      return next(error)
     
     res.send(results)
   })
