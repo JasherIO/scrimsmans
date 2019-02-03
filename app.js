@@ -1,6 +1,5 @@
 var createError = require('http-errors')
 var express = require('express')
-var expressSanitized = require('express-sanitize-escape')
 var logger = require('morgan')
 var helmet = require('helmet')
 
@@ -11,7 +10,6 @@ var app = express()
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(expressSanitized.middleware())
 app.use(helmet())
 
 app.use(router)

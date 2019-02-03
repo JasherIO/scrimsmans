@@ -1,8 +1,7 @@
 var express = require('express')
-var expressSanitized = require('express-sanitize-escape')
+var validator = require('validator')
 
 var router = express.Router()
-expressSanitized.sanitizeParams(router, ['id'])
 
 var db = require('../db')
 
@@ -17,10 +16,10 @@ router.get('/', function(req, res, next) {
 })
 
 // GET team
-router.get('/:id', function(req, res, next) {
-  const id = parseInt(req.params.id)
+router.get('/:id(\\d+)', function(req, res, next) {
+  const id = req.params.id
 
-  if (!id)
+  if (!validator.isInt(id))
     return next({ error: 'id must be an integer', status: 400 })
 
   db.query(`select * from teams where id=${id}`, (error, results) => {
@@ -32,10 +31,10 @@ router.get('/:id', function(req, res, next) {
 })
 
 // GET matches for team
-router.get('/:id/matches', function(req, res, next) {
-  const id = parseInt(req.params.id)
+router.get('/:id(\\d+)/matches', function(req, res, next) {
+  const id = req.params.id
 
-  if (!id)
+  if (!validator.isInt(id))
     return next({ error: 'id must be an integer', status: 400 })
 
   db.query(`select * from matches where team1=${id} or team2=${id}`, (error, results) => {
@@ -47,10 +46,10 @@ router.get('/:id/matches', function(req, res, next) {
 })
 
 // GET players for team
-router.get('/:id/players', function(req, res, next) {
-  const id = parseInt(req.params.id)
+router.get('/:id(\\d+)/players', function(req, res, next) {
+  const id = req.params.id
 
-  if (!id)
+  if (!validator.isInt(id))
     return next({ error: 'id must be an integer', status: 400 })
 
   db.query(`select * from players where team=${id}`, (error, results) => {
